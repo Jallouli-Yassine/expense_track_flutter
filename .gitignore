@@ -1,0 +1,7 @@
+/build/
+*.iml
+*.lock
+.DS_Store
+.idea/
+android/build/
+ios/Pods/
