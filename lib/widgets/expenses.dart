@@ -46,8 +46,43 @@ class _ExpensesState extends State<Expenses> {
     });
   }
 
+  void _removeExpense(Expense e) {
+    final expenseIndex = _ListOfExpenses.indexOf(e);
+    setState(() {
+      _ListOfExpenses.remove(e);
+    });
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: const Duration(seconds: 5),
+        content: const Text(
+          'expense deleted!',
+        ),
+        action: SnackBarAction(
+            label: 'Undo',
+            onPressed: () {
+              setState(() {
+                _ListOfExpenses.insert(expenseIndex, e);
+              });
+            }),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    Widget mainView = const Center(
+      child: Text('no data found'),
+    );
+    if (_ListOfExpenses.isNotEmpty) {
+      mainView = Expanded(
+        child: ExpenseList(
+          expensesList: _ListOfExpenses,
+          onDelete: _removeExpense,
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('flutter expense tracker'),
@@ -63,10 +98,9 @@ class _ExpensesState extends State<Expenses> {
       body: Column(
         children: [
           //Toolbar with the add btn => Row()
-
           const Text('the chart'),
           //bch tetra elisa lezem nhotouha f wost expanded
-          Expanded(child: ExpenseList(expensesList: _ListOfExpenses)),
+          mainView,
         ],
       ),
     );
